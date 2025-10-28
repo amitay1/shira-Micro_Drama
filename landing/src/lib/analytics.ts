@@ -159,9 +159,13 @@ export const initMetaPixel = () => {
       n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
     };
     if (!f._fbq) f._fbq = n;
+    // @ts-ignore - Meta Pixel property assignments
     n.push = n;
+    // @ts-ignore
     n.loaded = !0;
+    // @ts-ignore
     n.version = '2.0';
+    // @ts-ignore
     n.queue = [];
     t = b.createElement(e);
     t.async = !0;
