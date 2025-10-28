@@ -54,6 +54,7 @@ export default function RegisterPage() {
           data: {
             full_name: data.full_name,
           },
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       });
 
@@ -64,6 +65,12 @@ export default function RegisterPage() {
       if (!authData.user) {
         throw new Error('לא התקבל משתמש');
       }
+
+      console.log('Sign up result:', {
+        user: authData.user,
+        session: authData.session,
+        identities: authData.user.identities?.length,
+      });
 
       // Create user profile in users table
       const { error: profileError } = await supabase
@@ -86,9 +93,20 @@ export default function RegisterPage() {
         router.push('/');
       } else {
         // Email confirmation required
-        toast.success('החשבון נוצר! 📧 בדוק את האימייל שלך לאישור החשבון', {
-          duration: 6000,
-        });
+        toast.success(
+          'נשלח אימייל לאישור! 📧 בדוק את תיבת הדואר שלך (כולל תיקיית ספאם)',
+          {
+            duration: 8000,
+          }
+        );
+        // Show additional message with email
+        toast(
+          `אימייל נשלח ל: ${data.email}\nאם לא קיבלת, בדוק בספאם או נסה שוב`,
+          {
+            duration: 10000,
+            icon: '💌',
+          }
+        );
         router.push('/auth/login');
       }
     } catch (error: any) {
