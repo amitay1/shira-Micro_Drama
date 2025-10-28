@@ -150,10 +150,12 @@ export const initMetaPixel = () => {
   const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
   if (!pixelId) return;
 
-  // @ts-ignore
+  // @ts-ignore - Meta Pixel initialization code
   !(function (f, b, e, v, n, t, s) {
     if (f.fbq) return;
+    // @ts-ignore - Dynamic fbq assignment
     n = f.fbq = function () {
+      // @ts-ignore
       n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
     };
     if (!f._fbq) f._fbq = n;
@@ -172,9 +174,9 @@ export const initMetaPixel = () => {
     'script',
     'https://connect.facebook.net/en_US/fbevents.js'
   );
-  // @ts-ignore
+  // @ts-expect-error - fbq is dynamically added
   fbq('init', pixelId);
-  // @ts-ignore
+  // @ts-expect-error - fbq is dynamically added
   fbq('track', 'PageView');
 };
 
