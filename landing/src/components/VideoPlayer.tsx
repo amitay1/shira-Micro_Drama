@@ -70,7 +70,7 @@ const VideoPlayer = forwardRef<any, VideoPlayerProps>(
             seriesTitle: seriesTitle || '',
             episodeTitle: episode.title,
             episodeNumber: episode.episodeNumber,
-            seasonNumber: episode.seasonNumber || 1,
+            seasonNumber: 1,
             thumbnailUrl: episode.thumbnailUrl || '',
             videoUrl: episode.videoUrl,
           }
