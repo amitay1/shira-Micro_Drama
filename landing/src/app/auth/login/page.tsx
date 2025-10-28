@@ -31,24 +31,25 @@ export default function LoginPage() {
     try {
       setLoading(true);
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+      // Use Supabase Authentication
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
+
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
       });
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error?.message || 'שגיאה בהתחברות');
+      if (error) {
+        throw new Error(error.message || 'שגיאה בהתחברות');
       }
 
-      // Save tokens
-      localStorage.setItem('accessToken', result.data.accessToken);
-      localStorage.setItem('refreshToken', result.data.refreshToken);
-      localStorage.setItem('user', JSON.stringify(result.data.user));
+      if (!authData.session) {
+        throw new Error('לא התקבל session');
+      }
 
       toast.success('התחברת בהצלחה! 🎉');
       

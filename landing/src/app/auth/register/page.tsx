@@ -39,28 +39,45 @@ export default function RegisterPage() {
     try {
       setLoading(true);
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      // Use Supabase Authentication
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
+
+      // Sign up with Supabase
+      const { data: authData, error } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+        options: {
+          data: {
+            full_name: data.full_name,
+          },
         },
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-          full_name: data.full_name,
-        }),
       });
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error?.message || 'שגיאה ביצירת חשבון');
+      if (error) {
+        throw new Error(error.message || 'שגיאה ביצירת חשבון');
       }
 
-      // Save tokens
-      localStorage.setItem('accessToken', result.data.accessToken);
-      localStorage.setItem('refreshToken', result.data.refreshToken);
-      localStorage.setItem('user', JSON.stringify(result.data.user));
+      if (!authData.user) {
+        throw new Error('לא התקבל משתמש');
+      }
+
+      // Create user profile in users table
+      const { error: profileError } = await supabase
+        .from('users')
+        .insert({
+          id: authData.user.id,
+          email: data.email,
+          name: data.full_name,
+        });
+
+      if (profileError) {
+        console.error('Error creating user profile:', profileError);
+        // Don't throw - user is created in auth, we can fix profile later
+      }
 
       toast.success('החשבון נוצר בהצלחה! 🎉');
       router.push('/');

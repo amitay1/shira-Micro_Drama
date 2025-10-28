@@ -32,11 +32,32 @@ export default function AccountPage() {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    // Get user from localStorage
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
+    const loadUserData = async () => {
+      try {
+        // Get user from Supabase session
+        const { createClient } = await import('@supabase/supabase-js');
+        const supabase = createClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        );
+        
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session?.user) {
+          setUser({
+            email: session.user.email,
+            name: session.user.user_metadata?.full_name || session.user.email,
+          });
+        } else {
+          // Not logged in, redirect to login
+          router.push('/auth/login?from=/account');
+        }
+      } catch (error) {
+        console.error('Error loading user:', error);
+      }
+    };
+    
+    loadUserData();
     loadPurchases();
   }, []);
 
@@ -64,12 +85,23 @@ export default function AccountPage() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('user');
-    toast.success('התנתקת בהצלחה');
-    router.push('/');
+  const handleLogout = async () => {
+    try {
+      // Use Supabase to sign out
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
+      
+      await supabase.auth.signOut();
+      
+      toast.success('התנתקת בהצלחה');
+      router.push('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast.error('שגיאה בהתנתקות');
+    }
   };
 
   if (loading) {
