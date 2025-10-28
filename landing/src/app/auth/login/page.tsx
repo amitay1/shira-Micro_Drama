@@ -44,6 +44,10 @@ export default function LoginPage() {
       });
 
       if (error) {
+        // Handle email not confirmed error
+        if (error.message.includes('Email not confirmed')) {
+          throw new Error('האימייל טרם אושר. בדוק את תיבת הדואר שלך 📧');
+        }
         throw new Error(error.message || 'שגיאה בהתחברות');
       }
 

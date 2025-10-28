@@ -79,8 +79,18 @@ export default function RegisterPage() {
         // Don't throw - user is created in auth, we can fix profile later
       }
 
-      toast.success('החשבון נוצר בהצלחה! 🎉');
-      router.push('/');
+      // Check if email confirmation is required
+      if (authData.session) {
+        // No email confirmation needed - user is logged in
+        toast.success('החשבון נוצר בהצלחה! 🎉');
+        router.push('/');
+      } else {
+        // Email confirmation required
+        toast.success('החשבון נוצר! 📧 בדוק את האימייל שלך לאישור החשבון', {
+          duration: 6000,
+        });
+        router.push('/auth/login');
+      }
     } catch (error: any) {
       toast.error(error.message || 'שגיאה ביצירת חשבון');
     } finally {
