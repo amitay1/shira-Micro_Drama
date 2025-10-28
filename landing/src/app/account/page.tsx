@@ -43,7 +43,7 @@ export default function AccountPage() {
   const loadPurchases = async () => {
     try {
       const response = await apiClient.getMyPasses();
-      if (response.success && response.data) {
+      if (response && response.data) {
         setPasses(response.data);
       }
     } catch (error) {
@@ -56,7 +56,7 @@ export default function AccountPage() {
   const handleDownloadInvoice = async (orderId: string) => {
     try {
       const response = await apiClient.getInvoice(orderId);
-      if (response.success && response.data?.invoiceUrl) {
+      if (response && response.data?.invoiceUrl) {
         window.open(response.data.invoiceUrl, '_blank');
       }
     } catch (error) {
