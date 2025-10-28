@@ -1,0 +1,62 @@
+=================================================
+VERCEL DEPLOYMENT CONFIGURATION
+=================================================
+
+PROJECT SETTINGS:
+-----------------
+Framework Preset: Next.js
+Root Directory: landing
+Build Command: npm run build (default)
+Output Directory: .next (default)
+Install Command: npm install (default)
+
+ENVIRONMENT VARIABLES (Add all 5):
+-----------------
+
+1. NEXT_PUBLIC_SUPABASE_URL
+   Value: https://vuverbxxstnpdslqwxxf.supabase.co
+
+2. NEXT_PUBLIC_SUPABASE_ANON_KEY
+   Value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ1dmVyYnh4c3RucGRzbHF3eHhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzAwMjE4NjQsImV4cCI6MjA0NTU5Nzg2NH0.K_rYXoAI7lGxdKh45vGEzVQvnTYQqXLYGU4uMPbNjJI
+
+3. NEXT_PUBLIC_APP_URL
+   Value: https://your-app-name.vercel.app
+   (UPDATE THIS AFTER DEPLOYMENT WITH YOUR ACTUAL URL)
+
+4. NEXT_PUBLIC_API_URL
+   Value: http://localhost:3000/api/v1
+
+5. NEXT_PUBLIC_ENABLE_PWA
+   Value: true
+
+=================================================
+DEPLOYMENT STEPS:
+=================================================
+
+1. Go to: https://vercel.com/new
+2. Click "Import Git Repository"
+3. Select: amitay1/shira-Micro_Drama
+4. Configure:
+   - Framework: Next.js
+   - Root Directory: landing ⚠️ IMPORTANT!
+5. Add Environment Variables (copy from above)
+6. Click "Deploy"
+7. Wait 2-3 minutes for build
+8. Copy your Vercel URL
+9. Update NEXT_PUBLIC_APP_URL in Vercel settings
+10. Redeploy
+
+=================================================
+AFTER DEPLOYMENT:
+=================================================
+
+Test these features:
+✅ Homepage loads with 3 series
+✅ Click series → Episode list appears
+✅ Play episode 1-10 → Video plays (FREE)
+✅ Try episode 11-15 → Paywall appears
+✅ Favorites work
+✅ Watch history saves
+✅ Share button works
+
+Demo is ready! 🎉

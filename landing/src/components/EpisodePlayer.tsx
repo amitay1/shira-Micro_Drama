@@ -50,7 +50,7 @@ export default function EpisodePlayer() {
   const loadEpisodes = async () => {
     try {
       const response = await apiClient.getEpisodes(SERIES_ID);
-      if (response.success && response.data) {
+      if (response && response.data) {
         setEpisodes(response.data);
         // Start with episode 1
         if (response.data.length > 0) {
@@ -67,7 +67,7 @@ export default function EpisodePlayer() {
   const checkUserAccess = async () => {
     try {
       const response = await apiClient.checkAccess(SERIES_ID);
-      if (response.success && response.data) {
+      if (response && response.data) {
         setHasAccess(response.data.hasAccess);
       }
     } catch (error) {

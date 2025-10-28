@@ -36,8 +36,8 @@ function PaymentSuccessContent() {
     if (!orderId) return;
 
     try {
-      const response = await apiClient.get(`/season-pass/invoice/${orderId}`);
-      if (response.success && response.data?.invoiceUrl) {
+      const response = await apiClient.getInvoice(orderId);
+      if (response && response.data?.invoiceUrl) {
         window.open(response.data.invoiceUrl, '_blank');
       }
     } catch (error) {
