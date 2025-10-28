@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 /**
@@ -14,7 +14,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
  * - Parses the content to determine destination
  * - Redirects to appropriate episode or series page
  */
-export default function SharePage() {
+function SharePageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -94,5 +94,22 @@ export default function SharePage() {
         <p className="text-gray-400 mt-2">אנא המתן</p>
       </div>
     </div>
+  );
+}
+
+export default function SharePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="mb-4">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-500"></div>
+          </div>
+          <p className="text-white text-xl">טוען...</p>
+        </div>
+      </div>
+    }>
+      <SharePageContent />
+    </Suspense>
   );
 }

@@ -147,10 +147,6 @@ class ApiClient {
       timestamp: new Date().toISOString(),
     });
   }
-
-  async getInvoice(orderId: string) {
-    return this.client.get(`/invoices/${orderId}`);
-  }
 }
 
 export const apiClient = new ApiClient();
