@@ -47,34 +47,6 @@ export default function EpisodePlayer() {
     });
   };
 
-  const loadEpisodes = async () => {
-    try {
-      const response = await apiClient.getEpisodes(SERIES_ID);
-      if (response && response.data) {
-        setEpisodes(response.data);
-        // Start with episode 1
-        if (response.data.length > 0) {
-          setCurrentEpisode(response.data[0]);
-        }
-      }
-    } catch (error) {
-      console.error('Failed to load episodes:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const checkUserAccess = async () => {
-    try {
-      const response = await apiClient.checkAccess(SERIES_ID);
-      if (response && response.data) {
-        setHasAccess(response.data.hasAccess);
-      }
-    } catch (error) {
-      console.error('Failed to check access:', error);
-    }
-  };
-
   const handleEpisodeSelect = (episode: Episode) => {
     // Check if episode is locked
     if (!episode.isFree && !hasAccess) {
