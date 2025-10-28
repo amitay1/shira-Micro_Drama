@@ -1,0 +1,89 @@
+{
+  "name": "Shira Shorts - סדרות קצרות",
+  "short_name": "Shira",
+  "description": "פלטפורמת סדרות קצרות בסגנון TikTok - צפו בסדרות איכותיות בפורמט אנכי",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111827",
+  "theme_color": "#ec4899",
+  "orientation": "portrait",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/mobile-1.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/screenshots/mobile-2.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/screenshots/desktop-1.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "categories": ["entertainment", "video", "education"],
+  "shortcuts": [
+    {
+      "name": "המשך לצפות",
+      "short_name": "המשך",
+      "description": "המשך מהמקום שעצרת",
+      "url": "/?continue=true",
+      "icons": [
+        {
+          "src": "/icons/icon.svg",
+          "sizes": "any"
+        }
+      ]
+    },
+    {
+      "name": "המועדפים שלי",
+      "short_name": "מועדפים",
+      "description": "הסדרות האהובות עליך",
+      "url": "/favorites",
+      "icons": [
+        {
+          "src": "/icons/icon.svg",
+          "sizes": "any"
+        }
+      ]
+    },
+    {
+      "name": "חיפוש סדרות",
+      "short_name": "חיפוש",
+      "description": "מצא סדרות חדשות",
+      "url": "/search",
+      "icons": [
+        {
+          "src": "/icons/icon.svg",
+          "sizes": "any"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "share_target": {
+    "action": "/share",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}

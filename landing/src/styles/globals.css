@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Assistant:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-heebo: 'Heebo', sans-serif;
+  --font-assistant: 'Assistant', sans-serif;
+  
+  /* Colors */
+  --color-primary: 239 68 68; /* red-500 */
+  --color-secondary: 168 85 247; /* purple-500 */
+  --color-background: 255 255 255;
+  --color-foreground: 17 24 39; /* gray-900 */
+  
+  /* Spacing */
+  --header-height: 64px;
+  --sticky-bar-height: 56px;
+}
+
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+[dir="ltr"] {
+  direction: ltr;
+  text-align: left;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  font-family: var(--font-heebo);
+  direction: rtl;
+  background: var(--color-background);
+  color: var(--color-foreground);
+}
+
+body {
+  color: rgb(var(--color-foreground));
+  background: rgb(var(--color-background));
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Video.js RTL Fixes */
+.video-js {
+  direction: ltr;
+}
+
+.video-js .vjs-control-bar {
+  direction: ltr;
+}
+
+/* PWA Install Prompt Animation */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
