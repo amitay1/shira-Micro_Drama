@@ -20,6 +20,8 @@ export default function WatchPage() {
   const [allEpisodes, setAllEpisodes] = useState<Episode[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasAccess, setHasAccess] = useState(false);
+  const [checkingAccess, setCheckingAccess] = useState(true);
 
   useEffect(() => {
     const fetchEpisodeData = async () => {
@@ -42,6 +44,9 @@ export default function WatchPage() {
         // Get all episodes for this series
         const episodesData = await episodesService.getEpisodesBySeries(episodeData.seriesId);
         setAllEpisodes(episodesData);
+
+        // Check access to episode
+        await checkEpisodeAccess(episodeData, seriesData);
         
       } catch (err) {
         console.error('Error fetching episode:', err);
@@ -55,6 +60,50 @@ export default function WatchPage() {
       fetchEpisodeData();
     }
   }, [episodeId]);
+
+  const checkEpisodeAccess = async (episodeData: Episode, seriesData: Series | null) => {
+    try {
+      setCheckingAccess(true);
+      
+      // If episode is free, allow access
+      if (episodeData.isFree) {
+        setHasAccess(true);
+        setCheckingAccess(false);
+        return;
+      }
+
+      // Check if user has purchased Season Pass for this series
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
+
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session?.user) {
+        setHasAccess(false);
+        setCheckingAccess(false);
+        return;
+      }
+
+      // Check purchases table
+      const { data: purchase } = await supabase
+        .from('purchases')
+        .select('*')
+        .eq('user_id', session.user.id)
+        .eq('series_id', episodeData.seriesId)
+        .eq('status', 'active')
+        .maybeSingle();
+
+      setHasAccess(!!purchase);
+      setCheckingAccess(false);
+    } catch (err) {
+      console.error('Error checking access:', err);
+      setHasAccess(false);
+      setCheckingAccess(false);
+    }
+  };
 
   const handleNextEpisode = () => {
     if (!episode || allEpisodes.length === 0) return;
@@ -107,6 +156,107 @@ export default function WatchPage() {
           >
             חזרה לדף הבית
           </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Show paywall if episode is locked
+  if (!checkingAccess && !hasAccess && !episode.isFree) {
+    return (
+      <div className="min-h-screen bg-gray-900">
+        <div className="max-w-4xl mx-auto px-4 py-12">
+          {/* Back Button */}
+          <button
+            onClick={() => router.back()}
+            className="flex items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            חזור
+          </button>
+
+          <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8 border border-gray-700 text-center">
+            {/* Lock Icon */}
+            <div className="mb-6">
+              <div className="w-24 h-24 bg-gradient-to-br from-pink-600 to-purple-600 rounded-full flex items-center justify-center mx-auto">
+                <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Title */}
+            <h1 className="text-3xl font-bold text-white mb-4">
+              🔒 פרק נעול
+            </h1>
+
+            {/* Episode Info */}
+            <p className="text-xl text-gray-300 mb-2">
+              {episode.title}
+            </p>
+            <p className="text-gray-400 mb-8">
+              פרק {episode.episodeNumber} | {series?.title}
+            </p>
+
+            {/* Description */}
+            <div className="bg-gray-800/50 rounded-xl p-6 mb-8">
+              <p className="text-gray-300 text-lg mb-4">
+                כדי לצפות בפרק זה, יש צורך ב-Season Pass
+              </p>
+              <p className="text-gray-400">
+                Season Pass נותן לך גישה מלאה לכל הפרקים בסדרה זו
+              </p>
+            </div>
+
+            {/* Benefits */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+              <div className="bg-gray-800/50 rounded-lg p-4">
+                <div className="text-pink-500 text-2xl mb-2">✓</div>
+                <p className="text-white font-semibold mb-1">גישה מלאה</p>
+                <p className="text-gray-400 text-sm">לכל הפרקים בסדרה</p>
+              </div>
+              <div className="bg-gray-800/50 rounded-lg p-4">
+                <div className="text-pink-500 text-2xl mb-2">✓</div>
+                <p className="text-white font-semibold mb-1">צפייה ללא הגבלה</p>
+                <p className="text-gray-400 text-sm">כמה פעמים שתרצה</p>
+              </div>
+              <div className="bg-gray-800/50 rounded-lg p-4">
+                <div className="text-pink-500 text-2xl mb-2">✓</div>
+                <p className="text-white font-semibold mb-1">HD איכות</p>
+                <p className="text-gray-400 text-sm">צפייה באיכות מקסימלית</p>
+              </div>
+            </div>
+
+            {/* Price */}
+            {series && (
+              <div className="mb-8">
+                <div className="inline-block bg-gradient-to-r from-pink-600 to-purple-600 rounded-2xl px-8 py-4">
+                  <p className="text-white text-sm mb-1">מחיר חד פעמי</p>
+                  <p className="text-white text-4xl font-bold">
+                    ₪{series.seasonPassPrice}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* CTA Button */}
+            <button
+              onClick={() => router.push(`/payment/${series?.id}`)}
+              className="w-full max-w-md mx-auto px-8 py-4 bg-gradient-to-r from-pink-600 to-purple-600 text-white text-xl font-bold rounded-xl hover:from-pink-700 hover:to-purple-700 transition-all transform hover:scale-105 shadow-lg"
+            >
+              קנה Season Pass עכשיו
+            </button>
+
+            {/* Free Episodes Link */}
+            <button
+              onClick={() => router.push(`/series/${series?.id}`)}
+              className="mt-6 text-gray-400 hover:text-white transition-colors"
+            >
+              ← חזור לצפות בפרקים החינמיים
+            </button>
+          </div>
         </div>
       </div>
     );

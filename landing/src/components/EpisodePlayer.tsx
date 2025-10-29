@@ -48,17 +48,7 @@ export default function EpisodePlayer() {
   };
 
   const handleEpisodeSelect = (episode: Episode) => {
-    // Check if episode is locked
-    if (!episode.isFree && !hasAccess) {
-      setShowPaywall(true);
-      trackEvent({
-        action: 'show_paywall',
-        category: 'Monetization',
-        label: `Episode ${episode.episodeNumber}`,
-      });
-      return;
-    }
-
+    // DEMO MODE: All episodes are free - no paywall
     setCurrentEpisode(episode);
     trackEvent({
       action: 'episode_selected',
